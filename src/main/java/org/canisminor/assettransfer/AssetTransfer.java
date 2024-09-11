@@ -129,7 +129,7 @@ public final class AssetTransfer implements ContractInterface {
     }
 
     @Transaction(intent = Transaction.TYPE.SUBMIT)
-    public DataAsset CreateDataAsset(final Context ctx, final String id, final String name, final String ownerId, final String policy, final String location, final String field, final String cid, final String AESkey, final int encType) {
+    public DataAsset CreateDataAsset(final Context ctx, final String id, final String name, final String ownerId, final String policy, final String location, final String field, final String cid, final String aesKey, final int encType, final String videoPlace, final String videoTime) {
         ChaincodeStub stub = ctx.getStub();
 
         if (DataAssetExists(ctx, id)) {
@@ -144,7 +144,7 @@ public final class AssetTransfer implements ContractInterface {
             throw new ChaincodeException(errorMessage, AssetTransferErrors.ASSET_NOT_FOUND.toString());
         }
 
-        DataAsset dataAsset = new DataAsset(id, name, ownerId, policy, location, field, cid, AESkey, encType);
+        DataAsset dataAsset = new DataAsset(id, name, ownerId, policy, location, field, cid, aesKey, encType, videoPlace, videoTime);
         String sortedJson = genson.serialize(dataAsset);
         stub.putStringState(id, sortedJson);
 

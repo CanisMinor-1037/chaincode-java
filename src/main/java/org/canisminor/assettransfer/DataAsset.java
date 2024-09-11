@@ -30,10 +30,16 @@ public class DataAsset {
     private String cid; // cid密文
 
     @Property()
-    private String AESkey; // AES密钥
+    private String aesKey; // AES密钥
 
     @Property()
     private int encType; // 加密模式
+
+    @Property()
+    private String videoPlace; //
+
+    @Property()
+    private String videoTime; //
 
     // Getter
     public String getId() {
@@ -64,12 +70,20 @@ public class DataAsset {
         return cid;
     }
 
-    public String getAESkey() {
-        return AESkey;
+    public String getAesKey() {
+        return aesKey;
     }
 
     public int getEncType() {
         return encType;
+    }
+
+    public String getVideoPlace() {
+        return videoPlace;
+    }
+
+    public String getVideoTime() {
+        return videoTime;
     }
 
     // Constructor
@@ -80,8 +94,10 @@ public class DataAsset {
                      @JsonProperty("location") final String location,
                      @JsonProperty("field") final String field,
                      @JsonProperty("cid") final String cid,
-                     @JsonProperty("AESkey") final String AESkey,
-                     @JsonProperty("encType") final int encType) {
+                     @JsonProperty("aesKey") final String aesKey,
+                     @JsonProperty("encType") final int encType,
+                     @JsonProperty("videoPlace") final String videoPlace,
+                     @JsonProperty("videoTime") final String videoTime) {
         this.id = id;
         this.name = name;
         this.ownerId = ownerId;
@@ -89,8 +105,10 @@ public class DataAsset {
         this.location = location;
         this.field = field;
         this.cid = cid;
-        this.AESkey = AESkey;
+        this.aesKey = aesKey;
         this.encType = encType;
+        this.videoPlace = videoPlace;
+        this.videoTime = videoTime;
     }
 
     @Override
@@ -98,12 +116,22 @@ public class DataAsset {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         DataAsset dataAsset = (DataAsset) o;
-        return Objects.equals(getId(), dataAsset.getId()) && Objects.equals(getName(), dataAsset.getName()) && Objects.equals(getOwnerId(), dataAsset.getOwnerId()) && Objects.equals(getPolicy(), dataAsset.getPolicy()) && Objects.equals(getLocation(), dataAsset.getLocation()) && Objects.equals(getField(), dataAsset.getField()) && Objects.equals(getCid(), dataAsset.getCid()) && Objects.equals(getAESkey(), dataAsset.getAESkey()) && Objects.equals(getEncType(), dataAsset.getEncType());
+        return  Objects.equals(getId(), dataAsset.getId()) &&
+                Objects.equals(getName(), dataAsset.getName()) &&
+                Objects.equals(getOwnerId(), dataAsset.getOwnerId()) &&
+                Objects.equals(getPolicy(), dataAsset.getPolicy()) &&
+                Objects.equals(getLocation(), dataAsset.getLocation()) &&
+                Objects.equals(getField(), dataAsset.getField()) &&
+                Objects.equals(getCid(), dataAsset.getCid()) &&
+                Objects.equals(getAesKey(), dataAsset.getAesKey()) &&
+                Objects.equals(getEncType(), dataAsset.getEncType()) &&
+                Objects.equals(getVideoPlace(), dataAsset.getVideoPlace()) &&
+                Objects.equals(getVideoTime(), dataAsset.getVideoTime());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getName(), getOwnerId(), getPolicy(), getLocation(), getField(), getCid(), getAESkey(), getEncType());
+        return Objects.hash(getId(), getName(), getOwnerId(), getPolicy(), getLocation(), getField(), getCid(), getAesKey(), getEncType(), getVideoPlace(), getVideoTime());
     }
 
     @Override
@@ -116,8 +144,10 @@ public class DataAsset {
                 ", location='" + location + '\'' +
                 ", field='" + field + '\'' +
                 ", cid='" + cid + '\'' +
-                ", AESkey='" + AESkey + '\'' +
-                ", encType=" + encType +
+                ", aesKey='" + aesKey + '\'' +
+                ", encType='" + encType + '\'' +
+                ", videoPlace='" + videoPlace + '\'' +
+                ", videoTime=" + videoTime +
                 '}';
     }
 }
