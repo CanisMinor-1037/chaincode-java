@@ -35,12 +35,6 @@ public class DataAsset {
     @Property()
     private int encType; // 加密模式
 
-    @Property()
-    private String videoPlace; //
-
-    @Property()
-    private String videoTime; //
-
     // Getter
     public String getId() {
         return id;
@@ -78,14 +72,6 @@ public class DataAsset {
         return encType;
     }
 
-    public String getVideoPlace() {
-        return videoPlace;
-    }
-
-    public String getVideoTime() {
-        return videoTime;
-    }
-
     // Constructor
     public DataAsset(@JsonProperty("id") final String id,
                      @JsonProperty("name") final String name,
@@ -95,9 +81,7 @@ public class DataAsset {
                      @JsonProperty("field") final String field,
                      @JsonProperty("cid") final String cid,
                      @JsonProperty("aesKey") final String aesKey,
-                     @JsonProperty("encType") final int encType,
-                     @JsonProperty("videoPlace") final String videoPlace,
-                     @JsonProperty("videoTime") final String videoTime) {
+                     @JsonProperty("encType") final int encType) {
         this.id = id;
         this.name = name;
         this.ownerId = ownerId;
@@ -107,8 +91,6 @@ public class DataAsset {
         this.cid = cid;
         this.aesKey = aesKey;
         this.encType = encType;
-        this.videoPlace = videoPlace;
-        this.videoTime = videoTime;
     }
 
     @Override
@@ -124,14 +106,12 @@ public class DataAsset {
                 Objects.equals(getField(), dataAsset.getField()) &&
                 Objects.equals(getCid(), dataAsset.getCid()) &&
                 Objects.equals(getAesKey(), dataAsset.getAesKey()) &&
-                Objects.equals(getEncType(), dataAsset.getEncType()) &&
-                Objects.equals(getVideoPlace(), dataAsset.getVideoPlace()) &&
-                Objects.equals(getVideoTime(), dataAsset.getVideoTime());
+                Objects.equals(getEncType(), dataAsset.getEncType());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getName(), getOwnerId(), getPolicy(), getLocation(), getField(), getCid(), getAesKey(), getEncType(), getVideoPlace(), getVideoTime());
+        return Objects.hash(getId(), getName(), getOwnerId(), getPolicy(), getLocation(), getField(), getCid(), getAesKey(), getEncType());
     }
 
     @Override
@@ -146,8 +126,6 @@ public class DataAsset {
                 ", cid='" + cid + '\'' +
                 ", aesKey='" + aesKey + '\'' +
                 ", encType='" + encType + '\'' +
-                ", videoPlace='" + videoPlace + '\'' +
-                ", videoTime=" + videoTime +
                 '}';
     }
 }
