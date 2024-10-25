@@ -7,12 +7,13 @@ import org.hyperledger.fabric.contract.annotation.Property;
 import java.util.Objects;
 
 @DataType()
-public class AttributeApplication {
-    @Property(schema = {"pattern", "^AttributeApplication\\d{1,20}$"})
+public class AuthenticationApplication {
+    @Property(schema = {"pattern", "^AuthenticationApplication\\d{1,20}$"})
     private String id; // 属性申请id
 
-    @Property(schema = {"pattern", "^Department\\d{1,20}$"})
-    private String departmentId; // 机构id
+    // schema = {"pattern", "^DepartmentId_User\\d{1,20}$"}
+    @Property()
+    private String userId; // 用户id
 
     @Property(schema = {"pattern", "^(\\w+:\\w+)( \\w+:\\w+)*$"})
     private String attribute; // 申请属性
@@ -25,8 +26,8 @@ public class AttributeApplication {
         return id;
     }
 
-    public String getDepartmentId() {
-        return departmentId;
+    public String getUserId() {
+        return userId;
     }
 
     public String getAttribute() {
@@ -43,12 +44,12 @@ public class AttributeApplication {
     }
 
     // Constructor
-    public AttributeApplication(@JsonProperty("id") final String id,
-                                @JsonProperty("departmentId") final String departmentId,
+    public AuthenticationApplication(@JsonProperty("id") final String id,
+                                @JsonProperty("userId") final String userId,
                                 @JsonProperty("attribute") final String attribute,
                                 @JsonProperty("status") final int status) {
         this.id = id;
-        this.departmentId = departmentId;
+        this.userId = userId;
         this.attribute = attribute;
         this.status = status;
     }
@@ -57,20 +58,20 @@ public class AttributeApplication {
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        AttributeApplication that = (AttributeApplication) o;
-        return getStatus() == that.getStatus() && Objects.equals(getId(), that.getId()) && Objects.equals(getDepartmentId(), that.getDepartmentId()) && Objects.equals(getAttribute(), that.getAttribute());
+        AuthenticationApplication that = (AuthenticationApplication) o;
+        return getStatus() == that.getStatus() && Objects.equals(getId(), that.getId()) && Objects.equals(getUserId(), that.getUserId()) && Objects.equals(getAttribute(), that.getAttribute());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getDepartmentId(), getAttribute(), getStatus());
+        return Objects.hash(getId(), getUserId(), getAttribute(), getStatus());
     }
 
     @Override
     public String toString() {
-        return "AttributeApplication{" +
+        return "AuthenticationApplication{" +
                 "id='" + id + '\'' +
-                ", departmentId='" + departmentId + '\'' +
+                ", userId='" + userId + '\'' +
                 ", attribute='" + attribute + '\'' +
                 ", status=" + status +
                 '}';

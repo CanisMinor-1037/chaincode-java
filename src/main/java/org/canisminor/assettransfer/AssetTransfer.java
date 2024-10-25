@@ -41,78 +41,78 @@ public final class AssetTransfer implements ContractInterface {
         ASSET_ALREADY_EXISTS
     }
 
-    // Department
+    // User
     @Transaction(intent = Transaction.TYPE.EVALUATE)
-    public boolean DepartmentExists(final Context ctx, final String id) {
+    public boolean UserExists(final Context ctx, final String id) {
         ChaincodeStub stub = ctx.getStub();
-        String departmentJSON = stub.getStringState(id);
+        String userJSON = stub.getStringState(id);
 
-        return (departmentJSON != null && !departmentJSON.isEmpty());
+        return (userJSON != null && !userJSON.isEmpty());
     }
 
     @Transaction(intent = Transaction.TYPE.SUBMIT)
-    public Department CreateDepartment(final Context ctx, final String id, final String name, final String attribute) {
+    public User EnrollUser(final Context ctx, final String id, final String name, final String attribute) {
         ChaincodeStub stub = ctx.getStub();
 
-        if (DepartmentExists(ctx, id)) {
-            String errorMessage = String.format("Department %s already exists", id);
+        if (UserExists(ctx, id)) {
+            String errorMessage = String.format("User %s is already enrolled", id);
             System.out.println(errorMessage);
             throw new ChaincodeException(errorMessage, AssetTransferErrors.ASSET_ALREADY_EXISTS.toString());
         }
 
-        Department department = new Department(id, name, attribute);
+        User user = new User(id, name, attribute);
         // Use Genson to convert the Asset into string, sort it alphabetically and serialize it into a json string
-        String sortedJson = genson.serialize(department);
+        String sortedJson = genson.serialize(user);
         stub.putStringState(id, sortedJson);
 
-        stub.setEvent("CreateDepartment", sortedJson.getBytes(StandardCharsets.UTF_8));
-        return department;
+        stub.setEvent("CreateUser", sortedJson.getBytes(StandardCharsets.UTF_8));
+        return user;
     }
 
     @Transaction(intent = Transaction.TYPE.EVALUATE)
-    public Department ReadDepartment(final Context ctx, final String id) {
+    public User ReadUser(final Context ctx, final String id) {
         ChaincodeStub stub = ctx.getStub();
-        String departmentJSON = stub.getStringState(id);
+        String userJSON = stub.getStringState(id);
 
-        if (departmentJSON == null || departmentJSON.isEmpty()) {
-            String errorMessage = String.format("Department %s does not exist", id);
+        if (userJSON == null || userJSON.isEmpty()) {
+            String errorMessage = String.format("User %s is not enrolled", id);
             System.out.println(errorMessage);
             throw new ChaincodeException(errorMessage, AssetTransferErrors.ASSET_NOT_FOUND.toString());
         }
 
-        Department department = genson.deserialize(departmentJSON, Department.class);
-        return department;
+        User user = genson.deserialize(userJSON, User.class);
+        return user;
     }
 
     @Transaction(intent = Transaction.TYPE.SUBMIT)
-    public Department UpdateDepartmentAttribute(final Context ctx, final String id, final String attribute) {
+    public User UpdateUserAttribute(final Context ctx, final String id, final String attribute) {
         ChaincodeStub stub = ctx.getStub();
-        String departmentJSON = stub.getStringState(id);
+        String userJSON = stub.getStringState(id);
 
-        if (departmentJSON == null || departmentJSON.isEmpty()) {
-            String errorMessage = String.format("Department %s does not exist", id);
+        if (userJSON == null || userJSON.isEmpty()) {
+            String errorMessage = String.format("User %s is not enrolled", id);
             System.out.println(errorMessage);
             throw new ChaincodeException(errorMessage, AssetTransferErrors.ASSET_NOT_FOUND.toString());
         }
 
-        Department newDepartment = genson.deserialize(departmentJSON, Department.class);
-        newDepartment.setAttribute(attribute);
-        String sortedJson = genson.serialize(newDepartment);
+        User newUser = genson.deserialize(userJSON, User.class);
+        newUser.setAttribute(attribute);
+        String sortedJson = genson.serialize(newUser);
         stub.putStringState(id, sortedJson);
 
-        stub.setEvent("UpdateDepartmentAttribute", sortedJson.getBytes(StandardCharsets.UTF_8));
-        return newDepartment;
+        stub.setEvent("UpdateUserAttribute", sortedJson.getBytes(StandardCharsets.UTF_8));
+        return newUser;
     }
 
     @Transaction(intent = Transaction.TYPE.EVALUATE)
-    public String GetAllDepartment(final Context ctx) {
+    public String GetAllUserByDepartmentId(final Context ctx, final String departmentId) {
         ChaincodeStub stub = ctx.getStub();
-        List<Department> queryResults = new ArrayList<>();
+        List<User> queryResults = new ArrayList<>();
 
-        QueryResultsIterator<KeyValue> results = stub.getStateByRange("Department", "Department9999999999999999999999999");
+        QueryResultsIterator<KeyValue> results = stub.getStateByRange(departmentId + "_User", departmentId + "_User9999999999999999999999999");
         for (KeyValue result : results) {
-            Department department = genson.deserialize(result.getStringValue(), Department.class);
-            queryResults.add(department);
+            User user = genson.deserialize(result.getStringValue(), User.class);
+            queryResults.add(user);
         }
 
         final String reponse = genson.serialize(queryResults);
@@ -138,8 +138,8 @@ public final class AssetTransfer implements ContractInterface {
             throw new ChaincodeException(errorMessage, AssetTransferErrors.ASSET_ALREADY_EXISTS.toString());
         }
 
-        if (!DepartmentExists(ctx, ownerId)) {
-            String errorMessage = String.format("Department %s does not exist", ownerId);
+        if (!UserExists(ctx, ownerId)) {
+            String errorMessage = String.format("User %s is not enrolled", ownerId);
             System.out.println(errorMessage);
             throw new ChaincodeException(errorMessage, AssetTransferErrors.ASSET_NOT_FOUND.toString());
         }
@@ -201,8 +201,8 @@ public final class AssetTransfer implements ContractInterface {
             throw new ChaincodeException(errorMessage, AssetTransferErrors.ASSET_ALREADY_EXISTS.toString());
         }
 
-        if (!DepartmentExists(ctx, ownerId)) {
-            String errorMessage = String.format("Department %s does not exist", ownerId);
+        if (!UserExists(ctx, ownerId)) {
+            String errorMessage = String.format("User %s is not enrolled", ownerId);
             System.out.println(errorMessage);
             throw new ChaincodeException(errorMessage, AssetTransferErrors.ASSET_NOT_FOUND.toString());
         }
@@ -264,8 +264,8 @@ public final class AssetTransfer implements ContractInterface {
             throw new ChaincodeException(errorMessage, AssetTransferErrors.ASSET_ALREADY_EXISTS.toString());
         }
 
-        if (!DepartmentExists(ctx, ownerId)) {
-            String errorMessage = String.format("Department %s does not exist", ownerId);
+        if (!UserExists(ctx, ownerId)) {
+            String errorMessage = String.format("User %s is not enrolled", ownerId);
             System.out.println(errorMessage);
             throw new ChaincodeException(errorMessage, AssetTransferErrors.ASSET_NOT_FOUND.toString());
         }
@@ -333,8 +333,8 @@ public final class AssetTransfer implements ContractInterface {
             throw new ChaincodeException(errorMessage, AssetTransferErrors.ASSET_NOT_FOUND.toString());
         }
 
-        if (!DepartmentExists(ctx, applicantId)) {
-            String errorMessage = String.format("Department %s does not exist", applicantId);
+        if (!UserExists(ctx, applicantId)) {
+            String errorMessage = String.format("User %s is not enrolled", applicantId);
             System.out.println(errorMessage);
             throw new ChaincodeException(errorMessage, AssetTransferErrors.ASSET_NOT_FOUND.toString());
         }
@@ -422,8 +422,8 @@ public final class AssetTransfer implements ContractInterface {
             throw new ChaincodeException(errorMessage, AssetTransferErrors.ASSET_NOT_FOUND.toString());
         }
 
-        if (!DepartmentExists(ctx, applicantId)) {
-            String errorMessage = String.format("Department %s does not exist", applicantId);
+        if (!UserExists(ctx, applicantId)) {
+            String errorMessage = String.format("User %s is not enrolled", applicantId);
             System.out.println(errorMessage);
             throw new ChaincodeException(errorMessage, AssetTransferErrors.ASSET_NOT_FOUND.toString());
         }
@@ -491,8 +491,8 @@ public final class AssetTransfer implements ContractInterface {
             throw new ChaincodeException(errorMessage, AssetTransferErrors.ASSET_NOT_FOUND.toString());
         }
 
-        if (!DepartmentExists(ctx, applicantId)) {
-            String errorMessage = String.format("Department %s does not exist", applicantId);
+        if (!UserExists(ctx, applicantId)) {
+            String errorMessage = String.format("User %s is not enrolled", applicantId);
             System.out.println(errorMessage);
             throw new ChaincodeException(errorMessage, AssetTransferErrors.ASSET_NOT_FOUND.toString());
         }
@@ -555,9 +555,9 @@ public final class AssetTransfer implements ContractInterface {
         return response;
     }
 
-    // AttributeApplication
+    // AuthenticationApplication
     @Transaction(intent = Transaction.TYPE.EVALUATE)
-    public boolean AttributeApplicationExists(final Context ctx, final String id) {
+    public boolean AuthenticationApplicationExists(final Context ctx, final String id) {
         ChaincodeStub stub = ctx.getStub();
         String attributeApplicationJSON = stub.getStringState(id);
 
@@ -565,153 +565,76 @@ public final class AssetTransfer implements ContractInterface {
     }
 
     @Transaction(intent = Transaction.TYPE.SUBMIT)
-    public AttributeApplication CreateAttributeApplication(final Context ctx, final String id, final String departmentId, final String attribute, final int status) {
+    public AuthenticationApplication CreateAuthenticationApplication(final Context ctx, final String id, final String userId, final String attribute, final int status) {
         ChaincodeStub stub = ctx.getStub();
 
-        if (AttributeApplicationExists(ctx, id)) {
-            String errorMessage = String.format("AttributeApplication %s already exists", id);
+        if (AuthenticationApplicationExists(ctx, id)) {
+            String errorMessage = String.format("AuthenticationApplication %s already exists", id);
             System.out.println(errorMessage);
             throw new ChaincodeException(errorMessage, AssetTransferErrors.ASSET_ALREADY_EXISTS.toString());
         }
 
-        if (!DepartmentExists(ctx, departmentId)) {
-            String errorMessage = String.format("Department %s does not exist", departmentId);
+        if (!UserExists(ctx, userId)) {
+            String errorMessage = String.format("User %s is not enrolled", userId);
             System.out.println(errorMessage);
             throw new ChaincodeException(errorMessage, AssetTransferErrors.ASSET_NOT_FOUND.toString());
         }
 
-        AttributeApplication attributeApplication = new AttributeApplication(id, departmentId, attribute, status);
+        AuthenticationApplication attributeApplication = new AuthenticationApplication(id, userId, attribute, status);
         String sortedJson = genson.serialize(attributeApplication);
         stub.putStringState(id, sortedJson);
 
-        stub.setEvent("CreateAttributeApplication", sortedJson.getBytes(StandardCharsets.UTF_8));
+        stub.setEvent("CreateAuthenticationApplication", sortedJson.getBytes(StandardCharsets.UTF_8));
         return attributeApplication;
     }
 
     @Transaction(intent = Transaction.TYPE.EVALUATE)
-    public AttributeApplication ReadAttributeApplication(final Context ctx, final String id) {
+    public AuthenticationApplication ReadAuthenticationApplication(final Context ctx, final String id) {
         ChaincodeStub stub = ctx.getStub();
         String attributeApplicationJSON = stub.getStringState(id);
 
         if (attributeApplicationJSON == null || attributeApplicationJSON.isEmpty()) {
-            String errorMessage = String.format("AttributeApplication %s does not exist", id);
+            String errorMessage = String.format("AuthenticationApplication %s does not exist", id);
             System.out.println(errorMessage);
             throw new ChaincodeException(errorMessage, AssetTransferErrors.ASSET_NOT_FOUND.toString());
         }
 
-        AttributeApplication attributeApplication = genson.deserialize(attributeApplicationJSON, AttributeApplication.class);
+        AuthenticationApplication attributeApplication = genson.deserialize(attributeApplicationJSON, AuthenticationApplication.class);
         return attributeApplication;
     }
 
     @Transaction(intent = Transaction.TYPE.SUBMIT)
-    public AttributeApplication UpdateAttributeApplicationStatus(final Context ctx, final String id, final int status) {
+    public AuthenticationApplication UpdateAuthenticationApplicationStatus(final Context ctx, final String id, final int status) {
         ChaincodeStub stub = ctx.getStub();
         String attributeApplicationJSON = stub.getStringState(id);
 
         if (attributeApplicationJSON == null || attributeApplicationJSON.isEmpty()) {
-            String errorMessage = String.format("AttributeApplication %s does not exist", id);
+            String errorMessage = String.format("AuthenticationApplication %s does not exist", id);
             System.out.println(errorMessage);
             throw new ChaincodeException(errorMessage, AssetTransferErrors.ASSET_NOT_FOUND.toString());
         }
 
-        AttributeApplication newAttributeApplication = genson.deserialize(attributeApplicationJSON, AttributeApplication.class);
-        newAttributeApplication.setStatus(status);
-        String sortedJson = genson.serialize(newAttributeApplication);
+        AuthenticationApplication newAuthenticationApplication = genson.deserialize(attributeApplicationJSON, AuthenticationApplication.class);
+        newAuthenticationApplication.setStatus(status);
+        String sortedJson = genson.serialize(newAuthenticationApplication);
         stub.putStringState(id, sortedJson);
 
-        stub.setEvent("UpdateAttributeApplicationStatus", sortedJson.getBytes(StandardCharsets.UTF_8));
-        return newAttributeApplication;
+        stub.setEvent("UpdateAuthenticationApplicationStatus", sortedJson.getBytes(StandardCharsets.UTF_8));
+        return newAuthenticationApplication;
     }
 
     @Transaction(intent = Transaction.TYPE.EVALUATE)
-    public String GetAllAttributeApplication(final Context ctx) {
+    public String GetAllAuthenticationApplication(final Context ctx) {
         ChaincodeStub stub = ctx.getStub();
-        List<AttributeApplication> queryResults = new ArrayList<>();
+        List<AuthenticationApplication> queryResults = new ArrayList<>();
 
-        QueryResultsIterator<KeyValue> results = stub.getStateByRange("AttributeApplication", "AttributeApplication9999999999999999999999999");
+        QueryResultsIterator<KeyValue> results = stub.getStateByRange("AuthenticationApplication", "AuthenticationApplication9999999999999999999999999");
         for (KeyValue result : results) {
-            AttributeApplication attributeApplication = genson.deserialize(result.getStringValue(), AttributeApplication.class);
+            AuthenticationApplication attributeApplication = genson.deserialize(result.getStringValue(), AuthenticationApplication.class);
             queryResults.add(attributeApplication);
         }
 
         final String response = genson.serialize(queryResults);
         return response;
     }
-
-    // AttributeItem
-    @Transaction(intent = Transaction.TYPE.EVALUATE)
-    public boolean AttributeItemExists(final Context ctx, final String id) {
-        ChaincodeStub stub = ctx.getStub();
-        String attributeItemJSON = stub.getStringState(id);
-
-        return (attributeItemJSON != null && !attributeItemJSON.isEmpty());
-    }
-
-    @Transaction(intent = Transaction.TYPE.SUBMIT)
-    public AttributeItem CreateAttributeItem(final Context ctx, final String id, final String content) {
-        ChaincodeStub stub = ctx.getStub();
-
-        if (AttributeItemExists(ctx, id)) {
-            String errorMessage = String.format("AttributeItem %s already exists", id);
-            System.out.println(errorMessage);
-            throw new ChaincodeException(errorMessage, AssetTransferErrors.ASSET_ALREADY_EXISTS.toString());
-        }
-
-        AttributeItem attributeItem = new AttributeItem(id, content);
-        String sortedJson = genson.serialize(attributeItem);
-        stub.putStringState(id, sortedJson);
-
-        stub.setEvent("CreateAttributeItem", sortedJson.getBytes(StandardCharsets.UTF_8));
-        return attributeItem;
-    }
-
-    @Transaction(intent = Transaction.TYPE.EVALUATE)
-    public AttributeItem ReadAttributeItem(final Context ctx, final String id) {
-        ChaincodeStub stub = ctx.getStub();
-        String attributeItemJSON = stub.getStringState(id);
-
-        if (attributeItemJSON == null || attributeItemJSON.isEmpty()) {
-            String errorMessage = String.format("AttributeItem %s does not exist", id);
-            System.out.println(errorMessage);
-            throw new ChaincodeException(errorMessage, AssetTransferErrors.ASSET_NOT_FOUND.toString());
-        }
-
-        AttributeItem attributeItem = genson.deserialize(attributeItemJSON, AttributeItem.class);
-        return attributeItem;
-    }
-
-    @Transaction(intent = Transaction.TYPE.SUBMIT)
-    public AttributeItem DeleteAttributeItem(final Context ctx, final String id) {
-        ChaincodeStub stub = ctx.getStub();
-
-        String attributeItemJSON = stub.getStringState(id);
-
-        if (attributeItemJSON == null || attributeItemJSON.isEmpty()) {
-            String errorMessage = String.format("AttributeItem %s does not exist", id);
-            System.out.println(errorMessage);
-            throw new ChaincodeException(errorMessage, AssetTransferErrors.ASSET_NOT_FOUND.toString());
-        }
-
-        AttributeItem attributeItem = genson.deserialize(attributeItemJSON, AttributeItem.class);
-
-        stub.delState(id);
-        stub.setEvent("DeleteAttributeItem", attributeItemJSON.getBytes(StandardCharsets.UTF_8));
-        return attributeItem;
-    }
-
-    @Transaction(intent = Transaction.TYPE.EVALUATE)
-    public String GetAllAttributeItem(final Context ctx) {
-        ChaincodeStub stub = ctx.getStub();
-        List<AttributeItem> queryResults = new ArrayList<>();
-
-        QueryResultsIterator<KeyValue> results = stub.getStateByRange("AttributeItem", "AttributeItem9999999999999999999999999");
-        for (KeyValue result : results) {
-            AttributeItem attributeItem = genson.deserialize(result.getStringValue(), AttributeItem.class);
-            queryResults.add(attributeItem);
-        }
-
-        final String response = genson.serialize(queryResults);
-        return response;
-    }
-
 }

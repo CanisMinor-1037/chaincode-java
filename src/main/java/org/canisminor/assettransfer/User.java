@@ -7,12 +7,13 @@ import org.hyperledger.fabric.contract.annotation.Property;
 import java.util.Objects;
 
 @DataType()
-public class Department {
-    @Property(schema = {"pattern", "^Department\\d{1,20}$"})
-    private String id; // 机构id
+public class User {
+    // schema = {"pattern", "^DepartmentId_User\\d{1,20}$"}
+    @Property()
+    private String id; // 用户id
 
     @Property()
-    private String name; // 机构名
+    private String name; // 用户名
 
     @Property(schema = {"pattern", "^(\\w+:\\w+)( \\w+:\\w+)*$"})
     private String attribute; // 属性字符串
@@ -36,7 +37,7 @@ public class Department {
     }
 
     // Constructor
-    public Department(@JsonProperty("id") final String id,
+    public User(@JsonProperty("id") final String id,
                       @JsonProperty("name") final String name,
                       @JsonProperty("attribute") final String attribute) {
         this.id = id;
@@ -48,7 +49,7 @@ public class Department {
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Department that = (Department) o;
+        User that = (User) o;
         return Objects.equals(id, that.getId()) && Objects.equals(name, that.getName()) && Objects.equals(attribute, that.getAttribute());
     }
 
@@ -59,7 +60,7 @@ public class Department {
 
     @Override
     public String toString() {
-        return "Department{" +
+        return "User{" +
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
                 ", attribute='" + attribute + '\'' +
