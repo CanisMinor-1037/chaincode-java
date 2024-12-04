@@ -14,8 +14,8 @@ public class DBAssetOrder {
     @Property(schema = {"pattern", "^DBAsset\\d{1,20}$"})
     private String dbAssetId; // 数据资产id
 
-    @Property(schema = {"pattern", "^Department\\d{1,20}$"})
-    private String applicantId; // 申请平台id
+    @Property(schema = {"pattern", "^User\\d{1,20}$"})
+    private String applicantId; // 申请用户id
 
     @Property()
     private String sql; // 当前状态

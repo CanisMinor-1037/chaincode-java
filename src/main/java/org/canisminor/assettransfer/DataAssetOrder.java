@@ -14,8 +14,8 @@ public class DataAssetOrder {
     @Property(schema = {"pattern", "^DataAsset\\d{1,20}$"})
     private String dataAssetId; // 数据资产id
 
-    @Property(schema = {"pattern", "^Department\\d{1,20}$"})
-    private String applicantId; // 申请平台id
+    @Property(schema = {"pattern", "^User\\d{1,20}$"})
+    private String applicantId; // 申请用户id
 
     @Property(schema = {"minimum", "0", "maximum", "20"})
     private int status; // 当前状态

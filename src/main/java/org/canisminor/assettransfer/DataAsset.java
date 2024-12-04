@@ -14,8 +14,8 @@ public class DataAsset {
     @Property()
     private String name; // 数据资产名
 
-    @Property(schema = {"pattern", "^Department\\d{1,20}$"})
-    private String ownerId; // 所属平台id
+    @Property(schema = {"pattern", "^User\\d{1,20}$"})
+    private String ownerId; // 所属id
 
     @Property()
     private String policy; // 访问策略
