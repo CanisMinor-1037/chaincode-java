@@ -105,11 +105,11 @@ public final class AssetTransfer implements ContractInterface {
     }
 
     @Transaction(intent = Transaction.TYPE.EVALUATE)
-    public String GetAllUser(final Context ctx) {
+    public String GetAllUserByDepartmentId(final Context ctx, final String departmentId) {
         ChaincodeStub stub = ctx.getStub();
         List<User> queryResults = new ArrayList<>();
 
-        QueryResultsIterator<KeyValue> results = stub.getStateByRange("User", "User9999999999999999999999999");
+        QueryResultsIterator<KeyValue> results = stub.getStateByRange(departmentId + "_User", departmentId + "_User9999999999999999999999999");
         for (KeyValue result : results) {
             User user = genson.deserialize(result.getStringValue(), User.class);
             queryResults.add(user);
